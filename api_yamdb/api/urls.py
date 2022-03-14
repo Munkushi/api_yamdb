@@ -1,5 +1,4 @@
 from importlib.resources import path
-from xml.etree.ElementInclude import include
 from django.urls include, path
 from rest_framework import routers
 from .views import ReviewViewSet, CommentsViewSet
