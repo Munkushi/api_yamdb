@@ -5,23 +5,45 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
+class AbstractModel(models.Model):
+    """
+    Абстрактная модель для Genres и Categories.
+    """
+    slug = models.SlugField(unique=True)
+    name = models.TextField("Текст", max_length=150)
+
+
+class Genres(AbstractModel):
+    """Модель жанров."""
+
+    def __str__(self):
+        return self.name
+
+
+class Categories(AbstractModel):
+    """Модель категорий."""
+
+    def __str__(self):
+        return self.name
+
+
 class Titles(models.Model):
     """Модель названий."""
-    category = models.ForeignKey()
-    genre = models.ForeignKey()
-    name = models.TextField()
-    year = models.CharField()
-
-
-class Genres(models.Model):
-    """Модель жанров."""
-    slug = models.SlugField()
-
-
-class Categories(models.Model):
-    """Модель категорий."""
-    slug = models.Model
-    name = models.TextField
+    category = models.ForeignKey(
+        Categories,
+        on_delete=models.CASCADE,
+        related_name="titles"
+    )
+    genre = models.ForeignKey(
+        Genres,
+        on_delete=models.CASCADE,
+        related_name="titles"
+    )
+    description = models.CharField("Описание")
+    name = models.TextField("Название")
+    # добавить проверку на год
+    # 3/4 + валидатор
+    year = models.IntegerField("Год")
 
 
 class User(AbstractUser):
@@ -80,8 +102,8 @@ class User(AbstractUser):
     @property
     def is_moderator(self):
         return self.role == User.MODERATOR
-    
-    
+
+
 class Review(models.Model):
     """Модель ревью"""
     text = models.TextField()
@@ -98,7 +120,7 @@ class Review(models.Model):
     
     
 class Comments(models.Model):
-    '''Модель комментариев'''
+    """Модель комментариев."""
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments'
     )
