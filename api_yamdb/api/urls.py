@@ -1,5 +1,5 @@
 from importlib.resources import path
-from django.urls include, path
+from django.urls import include, path
 from rest_framework import routers
 from .views import ReviewViewSet, CommentsViewSet
 
