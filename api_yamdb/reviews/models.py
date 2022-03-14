@@ -1,5 +1,3 @@
-from cgitb import text
-import datetime as dt
 from .validators import username_validation
 
 from django.contrib.auth.models import AbstractUser
