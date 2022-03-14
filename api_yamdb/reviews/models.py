@@ -1,8 +1,10 @@
+from cgitb import text
 import datetime as dt
 from .validators import username_validation
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Titles(models.Model):
@@ -81,13 +83,26 @@ class User(AbstractUser):
     def is_moderator(self):
         return self.role == User.MODERATOR
     
+    
+class Review(models.Model):
+    """Модель ревью"""
+    text = models.TextField()
+    score = models.IntegerField(
+        default=6,
+        validators=[
+            MaxValueValidator(10),
+            MinValueValidator(1)
+        ]
+)
+    
+    
 class Comments(models.Model):
     '''Модель комментариев'''
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments'
     )
     review = models.ForeignKey(
-        Reviews, on_delete=models.CASCADE, related_name='comments'
+        Review, on_delete=models.CASCADE, related_name='comments'
     )
     text = models.TextField()
     created = models.DateTimeField(
