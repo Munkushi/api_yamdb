@@ -12,22 +12,19 @@ class AbstractModel(models.Model):
     slug = models.SlugField(unique=True)
     name = models.TextField("Текст", max_length=150)
 
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        abstract = True
-        # нужно запушить
-
 
 class Genres(AbstractModel):
     """Модель жанров."""
-    pass  # классы наследуют код от абстрактного
+
+    def __str__(self):
+        return self.name
 
 
 class Categories(AbstractModel):
     """Модель категорий."""
-    pass
+
+    def __str__(self):
+        return self.name
 
 
 class Titles(models.Model):
@@ -116,12 +113,12 @@ class Review(models.Model):
             MaxValueValidator(10),
             MinValueValidator(1)
         ]
-    )
-
+)
+    
     def __str__(self):
         return self.text
-
-
+    
+    
 class Comments(models.Model):
     """Модель комментариев."""
     author = models.ForeignKey(
@@ -130,10 +127,10 @@ class Comments(models.Model):
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name='comments'
     )
-    text = models.TextField("Текст")
+    text = models.TextField()
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True
     )
-
+    
     def __str__(self):
         return self.text
