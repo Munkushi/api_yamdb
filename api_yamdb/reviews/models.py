@@ -40,6 +40,12 @@ class Titles(models.Model):
     )
     name = models.TextField("Название")
     year = models.IntegerField("Год", validators=(validate_year,))
+    genre = models.ForeignKey(
+        Genres,
+        on_delete=models.CASCADE,
+        related_name="title_genre"
+    )
+    description = models.CharField("Описание")
 
 
 class GenreTitles(models.Model):
