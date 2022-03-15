@@ -16,7 +16,9 @@ class GenresViewSet(viewsets.ModelViewSet):
 class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
     pass
-
+class CategoriesViewSet(viewsets.ModelViewSet):
+    """Viewset для Category-модели."""
+    pass
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Viewset для Review-модели."""
