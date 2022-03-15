@@ -45,7 +45,9 @@ class Titles(models.Model):
         on_delete=models.CASCADE,
         related_name="title_genre"
     )
-    description = models.CharField("Описание")
+    description = models.CharField(
+        "Описание", max_length=200, null=True, blank=True
+        )
 
 
 class GenreTitles(models.Model):
@@ -134,7 +136,7 @@ class User(AbstractUser):
 
 class Review(models.Model):
     """Модель ревью"""
-    title = models.ForeignKey(
+    titles = models.ForeignKey(
         Titles,
         on_delete=models.CASCADE,
         related_name="reviews"

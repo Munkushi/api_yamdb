@@ -3,13 +3,23 @@ from turtle import title
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from reviews.models import Comments, Review, Titles
+from reviews.models import Comments, Review, Titles, Genres, Categories
 
 from .serializers import CommentsSerializer, ReviewSerializer
 from .permissions import IsAuthorOrReadOnly
 
 
+
+class GenresViewSet(viewsets.ModelViewSet):
+    """Viewset для Genres-модели."""
+    pass
+class TitlesViewSet(viewsets.ModelViewSet):
+    """Viewset для Titles-модели."""
+    pass
+
+
 class ReviewViewSet(viewsets.ModelViewSet):
+    """Viewset для Review-модели."""
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
 
@@ -24,6 +34,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
+    """Viewset для Comment-модели."""
     serializer_class = CommentsSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
     

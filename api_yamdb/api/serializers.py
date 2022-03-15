@@ -1,4 +1,3 @@
-from django.db import models
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from reviews.models import (
@@ -10,24 +9,21 @@ from reviews.models import (
     Categories
 )
 
-class AbstractSerializer(models.Model):
-    """Абстрактный серилизатор."""
-    class Meta:
-        fields = ("name", "slug",)
-        absract = True
-
 class TitlesSerializer(serializers.ModelSerializer):
     """Серилизатор для Title."""
     class Meta:
-        fields = ("year", "name",)
+        fields = ("year", "name", "description", "genre", "category")
 
-class GenresSerializer(AbstractSerializer):
+class GenresSerializer(serializers.ModelSerializer):
     """Серилизатор для Genres."""
-    pass
+    class Meta:
+        fields = ("name", "slug",)
 
-class CategoriesSerializer(AbstractSerializer):
+
+class CategoriesSerializer(serializers.ModelSerializer):
     """Серилизатор для Categories"""
-    pass
+    class Meta:
+        fields = ("name", "slug",)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
