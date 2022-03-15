@@ -109,13 +109,13 @@ class Review(models.Model):
     title = models.ForeignKey(
         Titles,
         on_delete=models.CASCADE,
-        related_name="title"
+        related_name="reviews"
     )
     text = models.TextField()
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="title"
+        related_name="reviews"
     )
     score = models.IntegerField(
         default=6,
@@ -130,6 +130,9 @@ class Review(models.Model):
     
     class Meta:
         ordering = ('-pub_date',)
+        models.UniqueConstraint(
+            fields=['title', 'author'], name='unique_review'
+        )
     
     def __str__(self):
         return self.text
