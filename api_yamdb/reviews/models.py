@@ -12,19 +12,18 @@ class AbstractModel(models.Model):
     slug = models.SlugField(unique=True)
     name = models.TextField("Текст", max_length=150)
 
+    class Meta:
+        abstract = True
+
 
 class Genres(AbstractModel):
     """Модель жанров."""
-
-    def __str__(self):
-        return self.name
+    pass
 
 
 class Categories(AbstractModel):
     """Модель категорий."""
-
-    def __str__(self):
-        return self.name
+    pass
 
 
 class Titles(models.Model):
@@ -41,8 +40,6 @@ class Titles(models.Model):
     )
     description = models.CharField("Описание")
     name = models.TextField("Название")
-    # добавить проверку на год
-    # 3/4 + валидатор
     year = models.IntegerField("Год")
 
 
