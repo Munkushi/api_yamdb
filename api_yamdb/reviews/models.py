@@ -1,3 +1,4 @@
+from lib2to3.pgen2.token import TILDE
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -37,14 +38,22 @@ class Titles(models.Model):
         on_delete=models.CASCADE,
         related_name="titles"
     )
-    genre = models.ForeignKey(
+    name = models.TextField("Название")
+    year = models.IntegerField("Год", validators=(validate_year,))
+
+
+class GenreTitles(models.Model):
+    """Связывающая моделька."""
+    titles = models.ForeignKey(
+        Titles,
+        on_delete=models.CASCADE,
+        related_name="genre_title"
+    )
+    genres = models.ForeignKey(
         Genres,
         on_delete=models.CASCADE,
-        related_name="titles"
+        related_name="genre"
     )
-    description = models.CharField("Описание")
-    name = models.TextField("Название")
-    year = models.IntegerField("Год")
 
 
 USER = 'user'
