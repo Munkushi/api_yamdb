@@ -1,4 +1,3 @@
-from lib2to3.pgen2.token import TILDE
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -112,6 +111,13 @@ class User(AbstractUser):
         max_length=30,
         blank=True,
         verbose_name='Фамилия'
+    )
+    confirmation_code = models.CharField(
+        'код подтверждения',
+        max_length=255,
+        null=True,
+        blank=False,
+        default='XXXX'
     )
 
     @property
