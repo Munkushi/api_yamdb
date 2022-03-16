@@ -121,6 +121,7 @@ class GenresViewSet(viewsets.ModelViewSet):
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, AdminOnly)
+    search_field = ("name",)
     
     def perform_create(self, serializer):
         serializer.save()
@@ -139,6 +140,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, AdminOnly)
+    search_fields = ("name",)
 
     def perform_create(self, serializer):
         serializer.save()

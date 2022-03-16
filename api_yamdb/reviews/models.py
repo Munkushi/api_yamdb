@@ -42,26 +42,11 @@ class Titles(models.Model):
     genre = models.ForeignKey(
         Genres,
         on_delete=models.CASCADE,
-        related_name="title_genre"
+        related_name="titles"
     )
     description = models.CharField(
         "Описание", max_length=200, null=True, blank=True
         )
-
-
-class GenreTitles(models.Model):
-    """Связывающая моделька."""
-    titles = models.ForeignKey(
-        Titles,
-        on_delete=models.CASCADE,
-        related_name="genre_title"
-    )
-    genres = models.ForeignKey(
-        Genres,
-        on_delete=models.CASCADE,
-        related_name="genre"
-    )
-
 
 USER = 'user'
 ADMIN = 'admin'
