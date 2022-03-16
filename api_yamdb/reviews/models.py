@@ -113,6 +113,13 @@ class User(AbstractUser):
         blank=True,
         verbose_name='Фамилия'
     )
+    confirmation_code = models.CharField(
+        'код подтверждения',
+        max_length=255,
+        null=True,
+        blank=False,
+        default='XXXX'
+    )
 
     @property
     def is_user(self):
