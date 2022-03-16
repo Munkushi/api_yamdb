@@ -77,7 +77,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date',)
+        fields = '__all__'
 
     validators = [
         UniqueTogetherValidator(
@@ -94,6 +94,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CommentsSerializer(serializers.ModelSerializer):
     """Серилизатор для Comment."""
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
+    )
     class Meta:
         model = Comments
         fields = '__all__'
