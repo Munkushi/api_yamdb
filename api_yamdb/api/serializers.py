@@ -52,17 +52,20 @@ class SignUpSerializer(serializers.ModelSerializer):
 class TitlesSerializer(serializers.ModelSerializer):
     """Серилизатор для Title."""
     class Meta:
+        model =Titles
         fields = ("year", "name", "description", "genre", "category")
 
 class GenresSerializer(serializers.ModelSerializer):
     """Серилизатор для Genres."""
     class Meta:
+        model = Genres 
         fields = ("name", "slug",)
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
     """Серилизатор для Categories"""
     class Meta:
+        model = Categories
         fields = ("name", "slug",)
 
 
