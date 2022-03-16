@@ -5,20 +5,28 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from reviews.models import Comments, Review, Titles, Genres, Categories
 
-from .serializers import CommentsSerializer, ReviewSerializer
+from .serializers import CommentsSerializer, ReviewSerializer, TitlesSerializer, GenresSerializer, CategoriesSerializer
 from .permissions import IsAuthorOrReadOnly
 
 
 
 class GenresViewSet(viewsets.ModelViewSet):
     """Viewset для Genres-модели."""
-    pass
+    serializer_class = GenresSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+
 class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
-    pass
+    serializer_class = TitlesSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+
 class CategoriesViewSet(viewsets.ModelViewSet):
     """Viewset для Category-модели."""
-    pass
+    serializer_class = CategoriesSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Viewset для Review-модели."""
