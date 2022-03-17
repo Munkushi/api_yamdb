@@ -42,6 +42,7 @@ class Titles(models.Model):
     genre = models.ForeignKey(
         Genres,
         on_delete=models.CASCADE,
+        # тут не должно быть каскейд
         related_name="titles"
     )
     description = models.CharField(

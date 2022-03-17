@@ -11,11 +11,26 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Categories, Comments, Genres, Review, Titles, User
 from .serializers import CommentsSerializer, ReviewSerializer, TitlesSerializer, GenresSerializer, CategoriesSerializer
 from .permissions import IsAuthorOrReadOnly
+from rest_framework import mixins
 
-from .permissions import AdminOnly, IsAuthorOrReadOnly
+from .filters import TitleFilters
+
+from .permissions import AdminOnly, IsAuthorOrReadOnly, AdminOrReadOnly
 from .serializers import (CommentsSerializer, GetTokenSerializer,
                           NotAdminSerializer, ReviewSerializer,
                           SignUpSerializer, UsersSerializer)
+
+
+class MixinForMainModels(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet):
+    """
+    Mixin для основных моделей.
+    """
+    pass
+
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -116,35 +131,31 @@ class APISignup(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class GenresViewSet(viewsets.ModelViewSet):
+class GenresViewSet(MixinForMainModels):
     """Viewset для Genres-модели."""
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, AdminOnly)
+    permission_classes = (AdminOrReadOnly,)
     search_field = ("name",)
     
-    def perform_create(self, serializer):
-        serializer.save()
 
 class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, AdminOnly)
-
+    permission_classes = (AdminOrReadOnly,)
+    filterset_class = TitleFilters
+    
+    
     def perform_create(self, serializer):
         serializer.save()
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoriesViewSet(MixinForMainModels):
     """Viewset для Category-модели."""
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, AdminOnly)
+    permission_classes = (IsAuthenticatedOrReadOnly, AdminOrReadOnly)
     search_fields = ("name",)
-
-    def perform_create(self, serializer):
-        serializer.save()
-
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Viewset для Review-модели."""

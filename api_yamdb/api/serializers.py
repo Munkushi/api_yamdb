@@ -53,8 +53,9 @@ class TitlesSerializer(serializers.ModelSerializer):
     """Серилизатор для Title."""
     class Meta:
         model =Titles
-        fields = ("year", "name", "description", "genre", "category")
+        fields = "__all__"
 
+       
 class GenresSerializer(serializers.ModelSerializer):
     """Серилизатор для Genres."""
     class Meta:
