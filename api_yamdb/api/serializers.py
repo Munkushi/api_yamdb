@@ -48,13 +48,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'username')
 
-
-class TitlesSerializer(serializers.ModelSerializer):
-    """Серилизатор для Title."""
-    class Meta:
-        model =Titles
-        fields = "__all__"
-
        
 class GenresSerializer(serializers.ModelSerializer):
     """Серилизатор для Genres."""
@@ -68,6 +61,16 @@ class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = ("name", "slug",)
+
+
+class TitlesSerializer(serializers.ModelSerializer):
+    """Серилизатор для Title."""
+    genre = GenresSerializer(read_only=True, many=True)
+    category = CategoriesSerializer(read_only=True)
+    
+    class Meta:
+        model =Titles
+        fields = "__all__"
 
 
 class ReviewSerializer(serializers.ModelSerializer):
