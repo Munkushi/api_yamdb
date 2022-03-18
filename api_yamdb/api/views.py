@@ -1,4 +1,5 @@
 from django.core.mail import EmailMessage
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -161,7 +162,7 @@ class GenresViewSet(MixinForMainModels):
 class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
-    queryset = Titles.objects.all()
+    queryset = Titles.objects.annotate(rating=Avg('reviews__score'))
     serializer_class = TitlesSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
