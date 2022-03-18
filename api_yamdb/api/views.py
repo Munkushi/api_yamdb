@@ -162,7 +162,7 @@ class GenresViewSet(MixinForMainModels):
 class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
-    queryset = Titles.objects.annotate(rating=Avg('reviews__score'))
+    queryset = Titles.objects.annotate(rating=Avg("reviews__score"))
     serializer_class = TitlesSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
