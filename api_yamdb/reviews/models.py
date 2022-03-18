@@ -134,7 +134,8 @@ class Review(models.Model):
     titles = models.ForeignKey(
         Titles,
         on_delete=models.CASCADE,
-        related_name="reviews"
+        related_name="reviews",
+        null=True
     )
     text = models.TextField()
     author = models.ForeignKey(
