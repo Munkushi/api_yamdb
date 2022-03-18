@@ -35,13 +35,16 @@ class Titles(models.Model):
     category = models.ForeignKey(
         Categories,
         on_delete=models.CASCADE,
-        related_name="titles"
+        related_name="titles",
+        blank=True,
+        null=True
     )
     name = models.TextField("Название")
     year = models.IntegerField("Год", validators=(validate_year,))
     genre = models.ForeignKey(
         Genres,
         on_delete=models.CASCADE,
+        blank=True,
         # тут не должно быть каскейд
         related_name="titles"
     )
