@@ -130,7 +130,7 @@ class User(AbstractUser):
 
 class Review(models.Model):
     """Модель ревью"""
-    titles = models.ForeignKey(
+    title = models.ForeignKey(
         Titles,
         on_delete=models.CASCADE,
         related_name="reviews",
