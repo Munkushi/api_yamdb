@@ -1,4 +1,3 @@
-from cgitb import lookup
 from django.core.mail import EmailMessage
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -17,6 +16,7 @@ from reviews.models import Categories, Comments, Genres, Review, Titles, User
 from .filters import TitleFilters
 from .permissions import (
     AdminOnly,
+    AdminOrReadOnly,
     IsAuthorOrHasRightsOrReadOnly,
 )
 from .serializers import (
@@ -155,7 +155,7 @@ class GenresViewSet(MixinForMainModels):
 
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
-    permission_classes = (AdminOnly,)
+    permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)
     filter_backends = (SearchFilter,)
     lookup_field = "slug"
@@ -166,19 +166,15 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
     queryset = Titles.objects.annotate(rating=Avg("reviews__score"))
     serializer_class = TitlesSerializer
-    permission_classes = (AdminOnly,)
+    permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
-
-    def perform_create(self, serializer):
-        serializer.save()
-
 
 class CategoriesViewSet(MixinForMainModels):
     """Viewset для Category-модели."""
 
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
-    permission_classes = (AdminOnly,)
+    permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)
     filter_backends = (SearchFilter,)
     lookup_field = "slug"
