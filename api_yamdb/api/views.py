@@ -15,7 +15,7 @@ from reviews.models import Categories, Comments, Genres, Review, Titles, User
 from rest_framework.permissions import SAFE_METHODS
 
 from .filters import TitleFilters
-from .permissions import (
+from .permissions import (  
     AdminOnly,
     AdminOrReadOnly,
     IsAuthorOrHasRightsOrReadOnly,
@@ -157,7 +157,7 @@ class APISignup(APIView):
 class GenresViewSet(MixinForMainModels):
     """Viewset для Genres-модели."""
 
-    queryset = Genres.objects.all()
+    queryset = Genres.objects.all().order_by("id")
     serializer_class = GenresSerializer
     permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)
@@ -169,7 +169,6 @@ class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
     queryset = Titles.objects.annotate(rating=Avg("reviews__score"))
-    # serializer_class = TitlesSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
 
@@ -182,7 +181,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
 class CategoriesViewSet(MixinForMainModels):
     """Viewset для Category-модели."""
 
-    queryset = Categories.objects.all()
+    queryset = Categories.objects.all().order_by("id")
     serializer_class = CategoriesSerializer
     permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)

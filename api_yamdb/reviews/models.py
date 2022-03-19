@@ -9,7 +9,7 @@ class AbstractModel(models.Model):
     """
     Абстрактная модель для Genres и Categories.
     """
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True,  blank=False)
     name = models.TextField("Текст", max_length=150)
 
     def __str__(self):

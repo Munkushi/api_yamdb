@@ -54,14 +54,15 @@ class GenresSerializer(serializers.ModelSerializer):
     """Серилизатор для Genres."""
     class Meta:
         model = Genres 
-        fields = ("name", "slug",)
+        fields = ("name", "slug")
+        
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
     """Серилизатор для Categories"""
     class Meta:
         model = Categories
-        fields = ("name", "slug",)
+        fields = ("name", "slug")
 
 
 class TitlesReadSerializer(serializers.ModelSerializer):
@@ -79,14 +80,14 @@ class TitlesReadSerializer(serializers.ModelSerializer):
 class TitleCreateSerializer(serializers.ModelSerializer):
     """Серилизатор для создания тайтла."""
     genre = serializers.SlugRelatedField(
-        slug_field="slug",
         queryset = Genres.objects.all(),
+        slug_field="slug",
         # required=True,
         many=True,
     )
     category = serializers.SlugRelatedField(
-        slug_field="slug",
         queryset = Genres.objects.all(),
+        slug_field="slug",
         # required=True
     )
     
