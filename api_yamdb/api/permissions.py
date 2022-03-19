@@ -33,6 +33,10 @@ class AdminOrReadOnly(permissions.BasePermission):
         ):
             return True
 
+class TitleAdmin(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.method in permissions.SAFE_METHODS or request.user.is_superuser
+
 
 class IsAuthorOrHasRightsOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
