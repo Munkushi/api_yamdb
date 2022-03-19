@@ -34,18 +34,17 @@ class Titles(models.Model):
     """Модель названий."""
     category = models.ForeignKey(
         Categories,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="titles",
         blank=True,
         null=True
     )
     name = models.TextField("Название")
     year = models.IntegerField("Год", validators=(validate_year,))
-    genre = models.ForeignKey(
+    genre = models.ManyToManyField(
+        # много жанров к одному тайтлу
         Genres,
-        on_delete=models.CASCADE,
         blank=True,
-        # тут не должно быть каскейд
         related_name="titles"
     )
     description = models.CharField(

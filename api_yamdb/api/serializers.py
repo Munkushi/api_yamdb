@@ -1,3 +1,4 @@
+from asyncore import read
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from reviews.models import (
@@ -63,15 +64,34 @@ class CategoriesSerializer(serializers.ModelSerializer):
         fields = ("name", "slug",)
 
 
-class TitlesSerializer(serializers.ModelSerializer):
+class TitlesReadSerializer(serializers.ModelSerializer):
     """Серилизатор для Title."""
-    genre = GenresSerializer(many=True)
-    category = CategoriesSerializer()
+    genre = GenresSerializer(many=True, read_only=True)
+    category = CategoriesSerializer(read_only=True)
     # вернется сам результат
     rating = serializers.IntegerField(read_only=True, required=False)
     
     class Meta:
-        model =Titles
+        model = Titles
+        fields = "__all__"
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    """Серилизатор для создания тайтла."""
+    genre = serializers.SlugRelatedField(
+        slug_field="slug",
+        queryset = Genres.objects.all(),
+        # required=True,
+        many=True,
+    )
+    category = serializers.SlugRelatedField(
+        slug_field="slug",
+        queryset = Genres.objects.all(),
+        # required=True
+    )
+    
+    class Meta:
+        model = Titles
         fields = "__all__"
 
 

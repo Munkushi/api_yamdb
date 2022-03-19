@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Categories, Comments, Genres, Review, Titles, User
+from rest_framework.permissions import SAFE_METHODS
 
 from .filters import TitleFilters
 from .permissions import (
@@ -27,7 +28,9 @@ from .serializers import (
     NotAdminSerializer,
     ReviewSerializer,
     SignUpSerializer,
-    TitlesSerializer,
+    TitlesReadSerializer,
+    TitleCreateSerializer,
+    TitlesReadSerializer,
     UsersSerializer,
 )
 
@@ -43,6 +46,7 @@ class MixinForMainModels(
     """
 
     pass
+
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -165,9 +169,15 @@ class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
     queryset = Titles.objects.annotate(rating=Avg("reviews__score"))
-    serializer_class = TitlesSerializer
+    # serializer_class = TitlesSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return TitlesReadSerializer
+        return TitleCreateSerializer
+
 
 class CategoriesViewSet(MixinForMainModels):
     """Viewset для Category-модели."""
