@@ -65,8 +65,9 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 class TitlesSerializer(serializers.ModelSerializer):
     """Серилизатор для Title."""
-    genre = GenresSerializer(read_only=True, many=True)
-    category = CategoriesSerializer(read_only=True)
+    genre = GenresSerializer(many=True)
+    category = CategoriesSerializer()
+    # вернется сам результат
     rating = serializers.IntegerField(read_only=True, required=False)
     
     class Meta:
