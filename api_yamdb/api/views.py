@@ -29,8 +29,7 @@ from .serializers import (
     ReviewSerializer,
     SignUpSerializer,
     TitlesReadSerializer,
-    TitleCreateSerializer,
-    TitlesReadSerializer,
+    # TitleCreateSerializer,
     UsersSerializer,
 )
 
@@ -169,14 +168,15 @@ class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
     queryset = Titles.objects.annotate(rating=Avg("reviews__score"))
-    # serializer_class = TitlesSerializer
+    serializer_class = TitlesReadSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
 
-    def get_serializer_class(self):
-        if self.request.method in SAFE_METHODS:
-            return TitlesReadSerializer
-        return TitleCreateSerializer
+    # под вопросом
+    # def get_serializer_class(self):
+    #     if self.request.method in SAFE_METHODS:
+    #         return TitlesReadSerializer
+    #     return TitleCreateSerializer
 
 
 class CategoriesViewSet(MixinForMainModels):
