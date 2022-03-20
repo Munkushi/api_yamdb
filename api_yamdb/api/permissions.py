@@ -41,9 +41,10 @@ class TitleAdmin(permissions.BasePermission):
 class IsAuthorOrHasRightsOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if (
-            request.user == obj.author
+            request.method in permissions.SAFE_METHODS
+            or request.user == obj.author
             or request.user.is_admin
+            or request.user.is_moderator
             or request.user.is_staff
-            or request.method in permissions.SAFE_METHODS
         ):
             return True

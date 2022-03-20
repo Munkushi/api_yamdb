@@ -1,7 +1,7 @@
 from re import search
 from django.contrib import admin
 
-from .models import User, Titles, Genres, Categories
+from .models import User, Title, Genres, Categories
 
 
 @admin.register(User)
@@ -44,4 +44,4 @@ class TitleAdmin(admin.ModelAdmin):
 
 admin.register(Categories, CategoriesAdmin)
 admin.register(Genres, GenresAdmin)
-admin.register(Titles, TitleAdmin)
+admin.register(Title, TitleAdmin)

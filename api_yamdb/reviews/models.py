@@ -30,7 +30,7 @@ class Categories(AbstractModel):
     pass
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Модель названий."""
     category = models.ForeignKey(
         Categories,
@@ -131,7 +131,7 @@ class User(AbstractUser):
 class Review(models.Model):
     """Модель ревью"""
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         related_name="reviews",
         null=True
@@ -143,7 +143,6 @@ class Review(models.Model):
         related_name="reviews"
     )
     score = models.IntegerField(
-        default=6,
         validators=[
             MaxValueValidator(10),
             MinValueValidator(1)
