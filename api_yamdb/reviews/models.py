@@ -43,10 +43,7 @@ class Title(models.Model):
         null=True,
     )
     name = models.TextField("Название")
-    year = models.IntegerField(
-        "Год", 
-        validators=(validate_year,)
-        )
+    year = models.IntegerField("Год", validators=(validate_year,))
     genre = models.ManyToManyField(
         # много жанров к одному тайтлу
         Genre,
@@ -54,11 +51,8 @@ class Title(models.Model):
         related_name="titles",
     )
     description = models.CharField(
-        "Описание", 
-        max_length=200, 
-        null=True, 
-        blank=True
-        )
+        "Описание", max_length=200, null=True, blank=True
+    )
 
 
 USER = "user"
@@ -85,38 +79,29 @@ class User(AbstractUser):
     )
     email = models.EmailField(
         max_length=50,
-        unique=True, 
-        blank=False, 
-        null=False, 
-        verbose_name="Почта"
+        unique=True,
+        blank=False,
+        null=False,
+        verbose_name="Почта",
     )
     bio = models.TextField(
-        max_length=500, 
-        blank=True, 
-        verbose_name="Биография"
-        )
+        max_length=500, blank=True, verbose_name="Биография"
+    )
     role = models.CharField(
-        choices=ROLE_CHOICES, 
-        default=USER, 
-        max_length=15, 
-        verbose_name="Роль"
+        choices=ROLE_CHOICES, default=USER, max_length=15, verbose_name="Роль"
     )
     first_name = models.CharField(
-        max_length=30, 
-        blank=True, 
-        verbose_name="Имя пользователя"
+        max_length=30, blank=True, verbose_name="Имя пользователя"
     )
     last_name = models.CharField(
-        max_length=30, 
-        blank=True, 
-        verbose_name="Фамилия"
-        )
+        max_length=30, blank=True, verbose_name="Фамилия"
+    )
     confirmation_code = models.CharField(
-        "код подтверждения", 
-        max_length=255, 
-        null=True, 
-        blank=False, 
-        default="XXXX"
+        "код подтверждения",
+        max_length=255,
+        null=True,
+        blank=False,
+        default="XXXX",
     )
 
     @property
@@ -144,36 +129,25 @@ class Review(models.Model):
     """Модель ревью"""
 
     title = models.ForeignKey(
-        Title, 
-        on_delete=models.CASCADE, 
-        related_name="reviews", 
-        null=True
+        Title, on_delete=models.CASCADE, related_name="reviews", null=True
     )
     text = models.TextField()
     author = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name="reviews"
-        )
+        User, on_delete=models.CASCADE, related_name="reviews"
+    )
     score = models.IntegerField(
-        validators=[
-            MaxValueValidator(10), 
-            MinValueValidator(1)
-            ]
+        validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
     pub_date = models.DateTimeField(
-        "Дата добавления", 
-        auto_now_add=True, 
-        db_index=True
-        )
+        "Дата добавления", auto_now_add=True, db_index=True
+    )
 
     class Meta:
         ordering = ("-pub_date",)
         constraints = [
             models.UniqueConstraint(
-                fields=["title", "author"], 
-                name="unique_review"
-                )
+                fields=["title", "author"], name="unique_review"
+            )
         ]
 
     def __str__(self):
@@ -184,21 +158,15 @@ class Comments(models.Model):
     """Модель комментариев."""
 
     review = models.ForeignKey(
-        Review, 
-        on_delete=models.CASCADE, 
-        related_name="comments"
+        Review, on_delete=models.CASCADE, related_name="comments"
     )
     text = models.TextField()
     author = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name="comments"
-        )
+        User, on_delete=models.CASCADE, related_name="comments"
+    )
     pub_date = models.DateTimeField(
-        "Дата добавления", 
-        auto_now_add=True,
-        db_index=True
-        )
+        "Дата добавления", auto_now_add=True, db_index=True
+    )
 
     class Meta:
         ordering = ("-pub_date",)

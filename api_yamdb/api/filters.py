@@ -5,7 +5,9 @@ from reviews.models import Title
 class TitleFilters(django_filters.FilterSet):
     """Класс для фильтра модели Title."""
 
-    category = django_filters.rest_framework.CharFilter(field_name="category__slug")
+    category = django_filters.rest_framework.CharFilter(
+        field_name="category__slug"
+    )
     # фильтр по слагу поля
     genre = django_filters.rest_framework.CharFilter(field_name="genre__slug")
     name = django_filters.rest_framework.CharFilter(
