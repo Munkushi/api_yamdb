@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
-from reviews.models import Categories, Comments, Genres, Review, Titles, User
+from reviews.models import Categories, Comments, Genres, Review, Title, User
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -66,7 +66,7 @@ class TitlesReadSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField(read_only=True, required=False)
     
     class Meta:
-        model = Titles
+        model = Title
         fields = "__all__"
 
 
