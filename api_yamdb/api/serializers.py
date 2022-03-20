@@ -1,13 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
-from reviews.models import (
-    Comments, 
-    Review, 
-    User, 
-    Titles, 
-    Genres, 
-    Categories
-)
+from rest_framework.validators import ValidationError
+from reviews.models import Categories, Comments, Genres, Review, Titles, User
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -65,7 +59,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
         lookup_field = 'slug'
 
 class TitlesReadSerializer(serializers.ModelSerializer):
-    """Серилизатор для Title."""
+    """Серилизатор для Titles."""
     genre = GenresSerializer(many=True, read_only=True)
     category = CategoriesSerializer(read_only=True)
     # вернется сам результат
@@ -99,24 +93,23 @@ class TitlesReadSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     """Серилизатор для Review."""
     author = serializers.SlugRelatedField(
-        read_only=True, slug_field='username'
+        read_only=True, slug_field='username', default=serializers.CurrentUserDefault()
     )
 
     class Meta:
         model = Review
         fields = '__all__'
 
-    validators = [
-        UniqueTogetherValidator(
-            queryset=Review.objects.all(), fields=('title', 'author')
-        )
-    ]
-
-    # Проверка, что нельзя написать ревью 2 раза на 1 тайтл
-    # def validate_title(self, value):
-    #     if :
-    #         raise serializers.ValidationError('На одно произведение можно написать только 1 отзыв')
-    #     return value
+    def validate(self, data):
+        """Проверка на повторное ревью"""
+        request = self.context['request']
+        title = self.context['title']
+        if (
+            request.method == 'POST' 
+            and Review.objects.filter(title=title, author=request.user).exists()
+            ):
+            raise ValidationError("К произведению можно оставить только одно ревью")
+        return data
 
 
 class CommentsSerializer(serializers.ModelSerializer):
@@ -124,6 +117,10 @@ class CommentsSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
     )
+    review = serializers.SlugRelatedField(
+        read_only=True, slug_field='text'
+    )
+    
     class Meta:
         model = Comments
         fields = '__all__'

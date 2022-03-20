@@ -194,7 +194,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """Viewset для Review-модели."""
 
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrHasRightsOrReadOnly,)
+    permission_classes = (IsAuthorOrHasRightsOrReadOnly, IsAuthenticatedOrReadOnly)
+    
+    def get_serializer_context(self):
+        context = super(ReviewViewSet, self).get_serializer_context()
+        title = get_object_or_404(Titles, id=self.kwargs.get('title_id'))
+        context.update({'title': title})
+        return context
 
     def get_queryset(self):
         title = get_object_or_404(Titles, id=self.kwargs.get('title_id'))
@@ -210,21 +216,20 @@ class CommentsViewSet(viewsets.ModelViewSet):
     """Viewset для Comment-модели."""
 
     serializer_class = CommentsSerializer
-    permission_classes = (IsAuthorOrHasRightsOrReadOnly,)
+    permission_classes = (IsAuthorOrHasRightsOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         review = get_object_or_404(
             Review,
-            title=self.kwargs.get('title_id'),
             id=self.kwargs.get('review_id'),
         )
         new_queryset = review.comments.all()
         return new_queryset
 
     def perform_create(self, serializer):
+        author = get_object_or_404(User, username=self.request.user)
         review = get_object_or_404(
             Review,
-            title=self.kwargs.get('title_id'),
             id=self.kwargs.get('review_id'),
         )
-        serializer.save(author=self.request.user, review=review)
+        serializer.save(author=author, review=review)
