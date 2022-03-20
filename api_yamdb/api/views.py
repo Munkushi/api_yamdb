@@ -115,8 +115,11 @@ class APIGetToken(APIView):
 
 class APISignup(APIView):
     """
-    Получить код подтверждения на переданный email. Права доступа: Доступно без
-    токена. Использовать имя 'me' в качестве username запрещено. Поля email и
+    Получить код подтверждения на переданный email. 
+    Права доступа: 
+    Доступно без токена. 
+    Использовать имя 'me' в качестве username запрещено. 
+    Поля email и
     username должны быть уникальными. Пример тела запроса:
     {
         "email": "string",
@@ -166,7 +169,9 @@ class GenresViewSet(MixinForMainModels):
 class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
-    queryset = Title.objects.annotate(rating=Avg("reviews__score"))
+    queryset = Title.objects.annotate(
+        rating=Avg("reviews__score")
+        )
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
     filter_backends = (DjangoFilterBackend,)
@@ -193,21 +198,35 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """Viewset для Review-модели."""
 
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrHasRightsOrReadOnly, IsAuthenticatedOrReadOnly)
+    permission_classes = (
+        IsAuthorOrHasRightsOrReadOnly, 
+        IsAuthenticatedOrReadOnly
+        )
 
     def get_serializer_context(self):
-        context = super(ReviewViewSet, self).get_serializer_context()
-        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        context = super(
+            ReviewViewSet, self
+        ).get_serializer_context()
+        title = get_object_or_404(
+            Title, 
+            id=self.kwargs.get("title_id")
+            )
         context.update({"title": title})
         return context
 
     def get_queryset(self):
-        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        title = get_object_or_404(
+            Title, 
+            id=self.kwargs.get("title_id")
+            )
         new_queryset = title.reviews.all()
         return new_queryset
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        title = get_object_or_404(
+            Title, 
+            id=self.kwargs.get("title_id"
+            ))
         serializer.save(author=self.request.user, title=title)
 
 
@@ -215,7 +234,10 @@ class CommentsViewSet(viewsets.ModelViewSet):
     """Viewset для Comment-модели."""
 
     serializer_class = CommentsSerializer
-    permission_classes = (IsAuthorOrHasRightsOrReadOnly, IsAuthenticatedOrReadOnly)
+    permission_classes = (
+        IsAuthorOrHasRightsOrReadOnly, 
+        IsAuthenticatedOrReadOnly)
+
 
     def get_queryset(self):
         review = get_object_or_404(
@@ -226,7 +248,10 @@ class CommentsViewSet(viewsets.ModelViewSet):
         return new_queryset
 
     def perform_create(self, serializer):
-        author = get_object_or_404(User, username=self.request.user)
+        author = get_object_or_404(
+            User, 
+            username=self.request.user
+            )
         review = get_object_or_404(
             Review,
             id=self.kwargs.get("review_id"),

@@ -6,19 +6,35 @@ from reviews.models import Category, Comments, Genre, Review, Title, User
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("username", "email", "first_name", "last_name", "bio", "role")
+        fields = (
+            "username", 
+            "email", 
+            "first_name", 
+            "last_name", 
+            "bio", 
+            "role"
+            )
 
 
 class NotAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("username", "email", "first_name", "last_name", "bio", "role")
+        fields = (
+            "username", 
+            "email", 
+            "first_name", 
+            "last_name", 
+            "bio", 
+            "role"
+            )
         read_only_fields = ("role",)
 
 
 class GetTokenSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
-    confirmation_code = serializers.CharField(required=True)
+    confirmation_code = serializers.CharField(
+        required=True
+        )
 
     class Meta:
         model = User
@@ -59,7 +75,9 @@ class TitlesReadSerializer(serializers.ModelSerializer):
     genre = GenresSerializer(many=True, read_only=True)
     category = CategoriesSerializer(read_only=True)
     # вернется сам результат
-    rating = serializers.IntegerField(read_only=True, required=False)
+    rating = serializers.IntegerField(
+        read_only=True, required=False
+        )
 
     class Meta:
         model = Title
@@ -102,7 +120,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     """Серилизатор для Review."""
 
     author = serializers.SlugRelatedField(
-        read_only=True, slug_field="username", default=serializers.CurrentUserDefault()
+        read_only=True, 
+        slug_field="username", 
+        default=serializers.CurrentUserDefault()
     )
 
     class Meta:
@@ -115,17 +135,27 @@ class ReviewSerializer(serializers.ModelSerializer):
         title = self.context["title"]
         if (
             request.method == "POST"
-            and Review.objects.filter(title=title, author=request.user).exists()
+            and Review.objects.filter(
+                title=title, author=request.user
+                ).exists()
         ):
-            raise ValidationError("К произведению можно оставить только одно ревью")
+            raise ValidationError(
+                "К произведению можно оставить только одно ревью"
+                )
         return data
 
 
 class CommentsSerializer(serializers.ModelSerializer):
     """Серилизатор для Comment."""
 
-    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    review = serializers.SlugRelatedField(read_only=True, slug_field="text")
+    author = serializers.SlugRelatedField(
+        read_only=True, 
+        slug_field="username"
+        )
+    review = serializers.SlugRelatedField(
+        read_only=True, 
+        slug_field="text"
+        )
 
     class Meta:
         model = Comments
