@@ -29,7 +29,7 @@ class AdminOrReadOnly(permissions.BasePermission):
         if (
             request.user.is_admin 
             or request.method in permissions.SAFE_METHODS
-            or request.user.is_superuser        
+            or request.user.is_superuser      
         ):
             return True
 
