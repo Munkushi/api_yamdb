@@ -1,13 +1,15 @@
-from django_filters import rest_framework
+import django_filters
 from reviews.models import Title
 
 
-class TitleFilters(rest_framework.FilterSet):
+class TitleFilters(django_filters.FilterSet):
     """Класс для фильтра модели Title."""
-    category = rest_framework.CharFilter(field_name="category__slug")
-    genre = rest_framework.CharFilter(field_name="genre__slug")
-    name = rest_framework.CharFilter(field_name="name")
-    year = rest_framework.NumberFilter(field_name="year")
+    category = django_filters.rest_framework.CharFilter(field_name="category__slug")
+    # фильтр по слагу поля
+    genre = django_filters.rest_framework.CharFilter(field_name="genre__slug")
+    name = django_filters.rest_framework.CharFilter(field_name="name", lookup_expr="icontains")
+    # icontains: Фильтрация размытия
+    year = django_filters.rest_framework.NumberFilter(field_name="year")
 
     class Meta:
         model = Title

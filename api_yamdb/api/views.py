@@ -8,6 +8,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -16,7 +17,7 @@ from rest_framework.permissions import SAFE_METHODS
 from rest_framework.pagination import LimitOffsetPagination
 
 from .filters import TitleFilters
-from .permissions import (  
+from .permissions import (
     AdminOnly,
     AdminOrReadOnly,
     IsAuthorOrHasRightsOrReadOnly,
@@ -49,7 +50,6 @@ class MixinForMainModels(
     pass
 
 
-
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
@@ -57,19 +57,19 @@ class UsersViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         AdminOnly,
     )
-    lookup_field = 'username'
+    lookup_field = "username"
     filter_backends = (SearchFilter,)
-    search_fields = ('username',)
+    search_fields = ("username",)
 
     @action(
-        methods=['GET', 'PATCH'],
+        methods=["GET", "PATCH"],
         detail=False,
         permission_classes=(IsAuthenticated,),
-        url_path='me',
+        url_path="me",
     )
     def get_current_user_info(self, request):
         serializer = UsersSerializer(request.user)
-        if request.method == 'PATCH':
+        if request.method == "PATCH":
             if request.user.is_admin:
                 serializer = UsersSerializer(
                     request.user, data=request.data, partial=True
@@ -99,19 +99,17 @@ class APIGetToken(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         try:
-            user = User.objects.get(username=data['username'])
+            user = User.objects.get(username=data["username"])
         except User.DoesNotExist:
             return Response(
-                {'username': 'Пользователь не найден!'},
+                {"username": "Пользователь не найден!"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        if data.get('confirmation_code') == user.confirmation_code:
+        if data.get("confirmation_code") == user.confirmation_code:
             token = RefreshToken.for_user(user).access_token
-            return Response(
-                {'token': str(token)}, status=status.HTTP_201_CREATED
-            )
+            return Response({"token": str(token)}, status=status.HTTP_201_CREATED)
         return Response(
-            {'confirmation_code': 'Неверный код подтверждения!'},
+            {"confirmation_code": "Неверный код подтверждения!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -132,9 +130,9 @@ class APISignup(APIView):
     @staticmethod
     def send_email(data):
         email = EmailMessage(
-            subject=data['email_subject'],
-            body=data['email_body'],
-            to=[data['to_email']],
+            subject=data["email_subject"],
+            body=data["email_body"],
+            to=[data["to_email"]],
         )
         email.send()
 
@@ -143,13 +141,13 @@ class APISignup(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         email_body = (
-            f'Доброе время суток, {user.username}.'
-            f'\nКод подтвержения для доступа к API: {user.confirmation_code}'
+            f"Доброе время суток, {user.username}."
+            f"\nКод подтвержения для доступа к API: {user.confirmation_code}"
         )
         data = {
-            'email_body': email_body,
-            'to_email': user.email,
-            'email_subject': 'Код подтвержения для доступа к API!',
+            "email_body": email_body,
+            "to_email": user.email,
+            "email_subject": "Код подтвержения для доступа к API!",
         }
         self.send_email(data)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -170,9 +168,9 @@ class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
     queryset = Title.objects.annotate(rating=Avg("reviews__score"))
-    # serializer_class = TitlesReadSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
+    filter_backends = (DjangoFilterBackend,)
     pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
@@ -197,20 +195,20 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthorOrHasRightsOrReadOnly, IsAuthenticatedOrReadOnly)
-    
+
     def get_serializer_context(self):
         context = super(ReviewViewSet, self).get_serializer_context()
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        context.update({'title': title})
+        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        context.update({"title": title})
         return context
 
     def get_queryset(self):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
         new_queryset = title.reviews.all()
         return new_queryset
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
         serializer.save(author=self.request.user, title=title)
 
 
@@ -223,7 +221,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         review = get_object_or_404(
             Review,
-            id=self.kwargs.get('review_id'),
+            id=self.kwargs.get("review_id"),
         )
         new_queryset = review.comments.all()
         return new_queryset
@@ -232,6 +230,6 @@ class CommentsViewSet(viewsets.ModelViewSet):
         author = get_object_or_404(User, username=self.request.user)
         review = get_object_or_404(
             Review,
-            id=self.kwargs.get('review_id'),
+            id=self.kwargs.get("review_id"),
         )
         serializer.save(author=author, review=review)
