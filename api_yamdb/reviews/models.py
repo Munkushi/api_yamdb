@@ -20,12 +20,12 @@ class AbstractModel(models.Model):
         abstract = True
     
 
-class Genres(AbstractModel):
+class Genre(AbstractModel):
     """Модель жанров."""
     pass
 
 
-class Categories(AbstractModel):
+class Category(AbstractModel):
     """Модель категорий."""
     pass
 
@@ -33,7 +33,7 @@ class Categories(AbstractModel):
 class Title(models.Model):
     """Модель названий."""
     category = models.ForeignKey(
-        Categories,
+        Category,
         on_delete=models.SET_NULL,
         related_name="titles",
         blank=True,
@@ -43,7 +43,7 @@ class Title(models.Model):
     year = models.IntegerField("Год", validators=(validate_year,))
     genre = models.ManyToManyField(
         # много жанров к одному тайтлу
-        Genres,
+        Genre,
         blank=True,
         related_name="titles"
     )

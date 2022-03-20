@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
-from reviews.models import Categories, Comments, Genres, Review, Title, User
+from reviews.models import Category, Comments, Genre, Review, Title, User
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -46,7 +46,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 class GenresSerializer(serializers.ModelSerializer):
     """Серилизатор для Genres."""
     class Meta:
-        model = Genres 
+        model = Genre 
         fields = ("name", "slug")
 
         lookup_field='slug'
@@ -54,7 +54,7 @@ class GenresSerializer(serializers.ModelSerializer):
 class CategoriesSerializer(serializers.ModelSerializer):
     """Серилизатор для Categories"""
     class Meta:
-        model = Categories
+        model = Category
         fields = ("name", "slug",)
         lookup_field = 'slug'
 
@@ -75,35 +75,35 @@ class TitlesReadSerializer(serializers.ModelSerializer):
 class TitleCreateSerializer(serializers.ModelSerializer):
     """Серилизатор для создания тайтла."""
     genre = serializers.SlugRelatedField(
-        queryset = Genres.objects.all(),
+        queryset = Genre.objects.all(),
         slug_field="slug",
         # required=True,
         many=True,
     )
     category = serializers.SlugRelatedField(
-        queryset = Genres.objects.all(),
+        queryset = Genre.objects.all(),
         slug_field="slug",
         # required=True
     )
 
-# Под вопросом
-# class TitleCreateSerializer(serializers.ModelSerializer):
-#     """Серилизатор для создания тайтла."""
-#     genre = serializers.SlugRelatedField(
-#         slug_field="slug",
-#         queryset = Genres.objects.all(),
-#         # required=True,
-#         many=True,
-#     )
-#     category = serializers.SlugRelatedField(
-#         slug_field="slug",
-#         queryset = Genres.objects.all(),
-#         # required=True
-#     )
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    """Серилизатор для создания тайтла."""
+    genre = serializers.SlugRelatedField(
+        slug_field="slug",
+        queryset = Genre.objects.all(),
+        # required=True,
+        many=True,
+    )
+    category = serializers.SlugRelatedField(
+        slug_field="slug",
+        queryset = Category.objects.all(),
+        # required=True
+    )
     
-    # class Meta:
-    #     model = Titles
-    #     fields = "__all__"
+    class Meta:
+        model = Title
+        fields = "__all__"
 
 
 class ReviewSerializer(serializers.ModelSerializer):

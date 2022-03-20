@@ -11,8 +11,9 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from reviews.models import Categories, Comments, Genres, Review, Title, User
+from reviews.models import Category, Comments, Genre, Review, Title, User
 from rest_framework.permissions import SAFE_METHODS
+from rest_framework.pagination import LimitOffsetPagination
 
 from .filters import TitleFilters
 from .permissions import (  
@@ -29,6 +30,7 @@ from .serializers import (
     ReviewSerializer,
     SignUpSerializer,
     TitlesReadSerializer,
+    TitleCreateSerializer,
     # TitleCreateSerializer,
     UsersSerializer,
 )
@@ -156,7 +158,7 @@ class APISignup(APIView):
 class GenresViewSet(MixinForMainModels):
     """Viewset для Genres-модели."""
 
-    queryset = Genres.objects.all().order_by("id")
+    queryset = Genre.objects.all().order_by("id")
     serializer_class = GenresSerializer
     permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)
@@ -168,21 +170,21 @@ class TitlesViewSet(viewsets.ModelViewSet):
     """Viewset для Titles-модели."""
 
     queryset = Title.objects.annotate(rating=Avg("reviews__score"))
-    serializer_class = TitlesReadSerializer
+    # serializer_class = TitlesReadSerializer
     permission_classes = (AdminOrReadOnly,)
     filterset_class = TitleFilters
+    pagination_class = LimitOffsetPagination
 
-    # под вопросом
-    # def get_serializer_class(self):
-    #     if self.request.method in SAFE_METHODS:
-    #         return TitlesReadSerializer
-    #     return TitleCreateSerializer
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return TitlesReadSerializer
+        return TitleCreateSerializer
 
 
 class CategoriesViewSet(MixinForMainModels):
     """Viewset для Category-модели."""
 
-    queryset = Categories.objects.all().order_by("id")
+    queryset = Category.objects.all().order_by("id")
     serializer_class = CategoriesSerializer
     permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)

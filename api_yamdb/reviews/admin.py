@@ -1,7 +1,7 @@
 from re import search
 from django.contrib import admin
 
-from .models import User, Title, Genres, Categories
+from .models import User, Title, Genre, Category
 
 
 @admin.register(User)
@@ -42,6 +42,6 @@ class TitleAdmin(admin.ModelAdmin):
     filter_fields = ("year", "category", "genre")
 
 
-admin.register(Categories, CategoriesAdmin)
-admin.register(Genres, GenresAdmin)
+admin.register(Category, CategoriesAdmin)
+admin.register(Genre, GenresAdmin)
 admin.register(Title, TitleAdmin)
