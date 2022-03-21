@@ -136,7 +136,10 @@ class Review(models.Model):
         User, on_delete=models.CASCADE, related_name="reviews"
     )
     score = models.IntegerField(
-        validators=[MaxValueValidator(10), MinValueValidator(1)]
+        validators=[
+            MaxValueValidator(10, message="Максимальное значение 10"), 
+            MinValueValidator(1, "Минимальное значение 1")
+            ]
     )
     pub_date = models.DateTimeField(
         "Дата добавления", auto_now_add=True, db_index=True
@@ -151,7 +154,7 @@ class Review(models.Model):
         ]
 
     def __str__(self):
-        return self.text
+        return self.text[:15]
 
 
 class Comments(models.Model):

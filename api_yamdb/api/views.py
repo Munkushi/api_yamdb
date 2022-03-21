@@ -218,6 +218,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         review = get_object_or_404(
             Review,
+            title=self.kwargs.get("title_id"),
             id=self.kwargs.get("review_id"),
         )
         new_queryset = review.comments.all()
@@ -227,6 +228,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
         author = get_object_or_404(User, username=self.request.user)
         review = get_object_or_404(
             Review,
+            title=self.kwargs.get("title_id"),
             id=self.kwargs.get("review_id"),
         )
         serializer.save(author=author, review=review)
