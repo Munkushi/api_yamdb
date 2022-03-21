@@ -17,6 +17,7 @@ class AbstractModel(models.Model):
         return self.name
 
     class Meta:
+        ordering = ("id",)
         abstract = True
 
 
@@ -43,7 +44,11 @@ class Title(models.Model):
         null=True,
     )
     name = models.TextField("Название")
-    year = models.IntegerField("Год", validators=(validate_year,))
+    year = models.IntegerField(
+        "Год", 
+        validators=(validate_year,),
+        db_index=True,
+        )
     genre = models.ManyToManyField(
         # много жанров к одному тайтлу
         Genre,
@@ -71,17 +76,15 @@ class User(AbstractUser):
 
     username = models.CharField(
         validators=(validate_username,),
-        max_length=25,
+        max_length=150,
         unique=True,
         blank=False,
         null=False,
         verbose_name="Псевдоним",
     )
     email = models.EmailField(
-        max_length=50,
+        max_length=254,
         unique=True,
-        blank=False,
-        null=False,
         verbose_name="Почта",
     )
     bio = models.TextField(
@@ -91,10 +94,10 @@ class User(AbstractUser):
         choices=ROLE_CHOICES, default=USER, max_length=15, verbose_name="Роль"
     )
     first_name = models.CharField(
-        max_length=30, blank=True, verbose_name="Имя пользователя"
+        max_length=150, blank=True, verbose_name="Имя пользователя"
     )
     last_name = models.CharField(
-        max_length=30, blank=True, verbose_name="Фамилия"
+        max_length=150, blank=True, verbose_name="Фамилия"
     )
     confirmation_code = models.CharField(
         "код подтверждения",

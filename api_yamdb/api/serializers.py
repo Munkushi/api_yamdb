@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
+
 from reviews.models import Category, Comments, Genre, Review, Title, User
 
 
@@ -50,8 +51,7 @@ class GenresSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ("name", "slug")
-
+        exclude = ("id",)
         lookup_field = "slug"
 
 
@@ -60,10 +60,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = (
-            "name",
-            "slug",
-        )
+        exclude = ("id",)
         lookup_field = "slug"
 
 

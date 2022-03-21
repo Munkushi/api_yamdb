@@ -22,18 +22,7 @@ from .serializers import (CategoriesSerializer, CommentsSerializer,
                           SignUpSerializer, TitleCreateSerializer,
                           TitlesReadSerializer, UsersSerializer)
 
-
-class MixinForMainModels(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
-    """
-    Mixin для основных моделей.
-    """
-
-    pass
+from .mixins import MixinForMainModels
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -48,7 +37,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     search_fields = ("username",)
 
     @action(
-        methods=["GET", "PATCH"],
+        methods=("GET", "PATCH"),
         detail=False,
         permission_classes=(IsAuthenticated,),
         url_path="me",
@@ -173,7 +162,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
 class CategoriesViewSet(MixinForMainModels):
     """Viewset для Category-модели."""
 
-    queryset = Category.objects.all().order_by("id")
+    queryset = Category.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)

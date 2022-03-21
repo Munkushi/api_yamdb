@@ -1,13 +1,19 @@
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+load_dotenv()
+
+
+secret_token = os.getenv("secret_token")
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = secret_token
+# спрятали наш токен >.<
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
