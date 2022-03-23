@@ -10,6 +10,8 @@ from reviews.models import (
     User
 )
 
+from reviews.models import Category, Comments, Genre, Review, Title, User
+
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,9 +72,7 @@ class TitlesReadSerializer(serializers.ModelSerializer):
     genre = GenresSerializer(many=True, read_only=True)
     category = CategoriesSerializer(read_only=True)
     # вернется сам результат
-    rating = serializers.IntegerField(
-        read_only=True, required=False
-    )
+    rating = serializers.IntegerField(read_only=True, required=False)
 
     class Meta:
         model = Title
@@ -146,9 +146,7 @@ class CommentsSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True, slug_field="username"
     )
-    review = serializers.SlugRelatedField(
-        read_only=True, slug_field="text"
-    )
+    review = serializers.SlugRelatedField(read_only=True, slug_field="text")
 
     class Meta:
         model = Comments

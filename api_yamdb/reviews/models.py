@@ -152,6 +152,10 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name="reviews"
     )
+    text = models.TextField()
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="reviews"
+    )
     score = models.IntegerField(
         validators=[
             MaxValueValidator(10, message="Максимальное значение 10"),
@@ -195,6 +199,13 @@ class Comments(models.Model):
         "Дата добавления",
         auto_now_add=True,
         db_index=True
+    )
+    text = models.TextField()
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="comments"
+    )
+    pub_date = models.DateTimeField(
+        "Дата добавления", auto_now_add=True, db_index=True
     )
 
     class Meta:
