@@ -127,6 +127,8 @@ REST_FRAMEWORK = {
 }
 # PageNumberPagination
 
+DEFAULT_FROM_EMAIL = 'from@yamdb.com'
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),

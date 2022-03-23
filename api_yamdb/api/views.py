@@ -6,21 +6,31 @@ from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from django.conf import settings
+from rest_framework.permissions import (
+    SAFE_METHODS,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, User
 
 from .filters import TitleFilters
-from .permissions import (AdminOnly, AdminOrReadOnly,
-                          IsAuthorOrHasRightsOrReadOnly)
-from .serializers import (CategoriesSerializer, CommentsSerializer,
-                          GenresSerializer, GetTokenSerializer,
-                          NotAdminSerializer, ReviewSerializer,
-                          SignUpSerializer, TitleCreateSerializer,
-                          TitlesReadSerializer, UsersSerializer)
+from .permissions import AdminOnly, AdminOrReadOnly, IsAuthorOrHasRightsOrReadOnly
+from .serializers import (
+    CategoriesSerializer,
+    CommentsSerializer,
+    GenresSerializer,
+    GetTokenSerializer,
+    NotAdminSerializer,
+    ReviewSerializer,
+    SignUpSerializer,
+    TitleCreateSerializer,
+    TitlesReadSerializer,
+    UsersSerializer,
+)
 
 from .mixins import MixinForMainModels
 
@@ -40,22 +50,28 @@ class UsersViewSet(viewsets.ModelViewSet):
         methods=("GET", "PATCH"),
         detail=False,
         permission_classes=(IsAuthenticated,),
-        url_path="me",
     )
-    def get_current_user_info(self, request):
+    def me(self, request):
         serializer = UsersSerializer(request.user)
         if request.method == "PATCH":
             if request.user.is_admin:
                 serializer = UsersSerializer(
-                    request.user, data=request.data, partial=True
+                    request.user, 
+                    data=request.data, 
+                    partial=True
                 )
             else:
                 serializer = NotAdminSerializer(
-                    request.user, data=request.data, partial=True
+                    request.user, 
+                    data=request.data, 
+                    partial=True
                 )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                serializer.data, 
+                status=status.HTTP_200_OK
+                )
         return Response(serializer.data)
 
 
@@ -83,8 +99,8 @@ class APIGetToken(APIView):
         if data.get("confirmation_code") == user.confirmation_code:
             token = RefreshToken.for_user(user).access_token
             return Response(
-                {"token": str(token)}, status=status.HTTP_201_CREATED
-            )
+                {"token": str(token)}, 
+                status=status.HTTP_201_CREATED)
         return Response(
             {"confirmation_code": "Неверный код подтверждения!"},
             status=status.HTTP_400_BAD_REQUEST,
@@ -113,6 +129,7 @@ class APISignup(APIView):
             subject=data["email_subject"],
             body=data["email_body"],
             to=[data["to_email"]],
+            from_email=[data["from_email"]],
         )
         email.send()
 
@@ -127,10 +144,13 @@ class APISignup(APIView):
         data = {
             "email_body": email_body,
             "to_email": user.email,
+            "from_email": settings.DEFAULT_FROM_EMAIL,
             "email_subject": "Код подтвержения для доступа к API!",
         }
         self.send_email(data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+            )
 
 
 class GenresViewSet(MixinForMainModels):
@@ -180,19 +200,30 @@ class ReviewViewSet(viewsets.ModelViewSet):
     )
 
     def get_serializer_context(self):
-        context = super(ReviewViewSet, self).get_serializer_context()
-        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        context = super(
+            ReviewViewSet, self
+            ).get_serializer_context()
+        title = get_object_or_404(
+            Title, id=self.kwargs.get("title_id")
+            )
         context.update({"title": title})
         return context
 
     def get_queryset(self):
-        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        title = get_object_or_404(
+            Title, id=self.kwargs.get("title_id")
+            )
         new_queryset = title.reviews.all()
         return new_queryset
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
-        serializer.save(author=self.request.user, title=title)
+        title = get_object_or_404(
+            Title, id=self.kwargs.get("title_id")
+            )
+        serializer.save(
+            author=self.request.user, 
+            title=title
+            )
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
@@ -214,10 +245,14 @@ class CommentsViewSet(viewsets.ModelViewSet):
         return new_queryset
 
     def perform_create(self, serializer):
-        author = get_object_or_404(User, username=self.request.user)
+        author = get_object_or_404(
+            User, username=self.request.user
+            )
         review = get_object_or_404(
             Review,
             title=self.kwargs.get("title_id"),
             id=self.kwargs.get("review_id"),
         )
-        serializer.save(author=author, review=review)
+        serializer.save(
+            author=author, review=review
+            )

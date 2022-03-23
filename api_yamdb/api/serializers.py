@@ -1,7 +1,14 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
-from reviews.models import Category, Comments, Genre, Review, Title, User
+from reviews.models import (
+    Category, 
+    Comments, 
+    Genre, 
+    Review, 
+    Title, 
+    User
+)
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -20,14 +27,7 @@ class UsersSerializer(serializers.ModelSerializer):
 class NotAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "bio",
-            "role",
-        )
+        exclude = ("id",)
         read_only_fields = ("role",)
 
 
@@ -70,7 +70,9 @@ class TitlesReadSerializer(serializers.ModelSerializer):
     genre = GenresSerializer(many=True, read_only=True)
     category = CategoriesSerializer(read_only=True)
     # вернется сам результат
-    rating = serializers.IntegerField(read_only=True, required=False)
+    rating = serializers.IntegerField(
+        read_only=True, required=False
+        )
 
     class Meta:
         model = Title
@@ -130,11 +132,11 @@ class ReviewSerializer(serializers.ModelSerializer):
             request.method == "POST"
             and Review.objects.filter(
                 title=title, author=request.user
-            ).exists()
+                ).exists()
         ):
             raise ValidationError(
                 "К произведению можно оставить только одно ревью"
-            )
+                )
         return data
 
 
@@ -143,8 +145,10 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     author = serializers.SlugRelatedField(
         read_only=True, slug_field="username"
-    )
-    review = serializers.SlugRelatedField(read_only=True, slug_field="text")
+        )
+    review = serializers.SlugRelatedField(
+        read_only=True, slug_field="text"
+        )
 
     class Meta:
         model = Comments
