@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -6,7 +7,6 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
-from django.conf import settings
 from rest_framework.permissions import (
     SAFE_METHODS,
     IsAuthenticated,
@@ -18,7 +18,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, User
 
 from .filters import TitleFilters
-from .permissions import AdminOnly, AdminOrReadOnly, IsAuthorOrHasRightsOrReadOnly
+from .mixins import MixinForMainModels
+from .permissions import (
+    AdminOnly,
+    AdminOrReadOnly,
+    IsAuthorOrHasRightsOrReadOnly,
+)
 from .serializers import (
     CategoriesSerializer,
     CommentsSerializer,
@@ -31,8 +36,6 @@ from .serializers import (
     TitlesReadSerializer,
     UsersSerializer,
 )
-
-from .mixins import MixinForMainModels
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -91,7 +94,9 @@ class APIGetToken(APIView):
             )
         if data.get("confirmation_code") == user.confirmation_code:
             token = RefreshToken.for_user(user).access_token
-            return Response({"token": str(token)}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"token": str(token)}, status=status.HTTP_201_CREATED
+            )
         return Response(
             {"confirmation_code": "Неверный код подтверждения!"},
             status=status.HTTP_400_BAD_REQUEST,
