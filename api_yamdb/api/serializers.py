@@ -2,11 +2,11 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from reviews.models import (
-    Category, 
-    Comments, 
-    Genre, 
-    Review, 
-    Title, 
+    Category,
+    Comments,
+    Genre,
+    Review,
+    Title,
     User
 )
 
@@ -72,7 +72,7 @@ class TitlesReadSerializer(serializers.ModelSerializer):
     # вернется сам результат
     rating = serializers.IntegerField(
         read_only=True, required=False
-        )
+    )
 
     class Meta:
         model = Title
@@ -132,11 +132,11 @@ class ReviewSerializer(serializers.ModelSerializer):
             request.method == "POST"
             and Review.objects.filter(
                 title=title, author=request.user
-                ).exists()
+            ).exists()
         ):
             raise ValidationError(
                 "К произведению можно оставить только одно ревью"
-                )
+            )
         return data
 
 
@@ -145,10 +145,10 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     author = serializers.SlugRelatedField(
         read_only=True, slug_field="username"
-        )
+    )
     review = serializers.SlugRelatedField(
         read_only=True, slug_field="text"
-        )
+    )
 
     class Meta:
         model = Comments
