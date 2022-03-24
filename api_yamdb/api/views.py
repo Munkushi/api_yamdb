@@ -150,7 +150,7 @@ class APISignup(APIView):
 class GenresViewSet(MixinForMainModels):
     """Viewset для Genres-модели."""
 
-    queryset = Genre.objects.all().order_by("id")
+    queryset = Genre.objects.all()
     serializer_class = GenresSerializer
     permission_classes = (AdminOrReadOnly,)
     search_fields = ("name",)

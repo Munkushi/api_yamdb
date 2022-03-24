@@ -3,14 +3,14 @@ from rest_framework.validators import ValidationError
 
 from reviews.models import (
     Category,
-    Comments,
+    Comment,
     Genre,
     Review,
     Title,
     User
 )
 
-from reviews.models import Category, Comments, Genre, Review, Title, User
+from reviews.models import Category, Comment, Genre, Review, Title, User
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -117,12 +117,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field="username",
-        default=serializers.CurrentUserDefault(),
     )
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = ("id", "text", "author", "score", "pub_date")
 
     def validate(self, data):
         """Проверка на повторное ревью"""
@@ -149,5 +148,5 @@ class CommentsSerializer(serializers.ModelSerializer):
     review = serializers.SlugRelatedField(read_only=True, slug_field="text")
 
     class Meta:
-        model = Comments
+        model = Comment
         fields = "__all__"

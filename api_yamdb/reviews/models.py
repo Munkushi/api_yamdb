@@ -5,6 +5,17 @@ from django.db import models
 from .validators import validate_username, validate_year
 
 
+USER = "user"
+ADMIN = "admin"
+MODERATOR = "moderator"
+
+ROLE_CHOICES = [
+    (USER, USER),
+    (ADMIN, ADMIN),
+    (MODERATOR, MODERATOR),
+]
+
+
 class AbstractModel(models.Model):
     """
     Абстрактная модель для Genres и Categories.
@@ -61,17 +72,6 @@ class Title(models.Model):
         null=True,
         blank=True
     )
-
-
-USER = "user"
-ADMIN = "admin"
-MODERATOR = "moderator"
-
-ROLE_CHOICES = [
-    (USER, USER),
-    (ADMIN, ADMIN),
-    (MODERATOR, MODERATOR),
-]
 
 
 class User(AbstractUser):
@@ -181,7 +181,7 @@ class Review(models.Model):
         return self.text[:15]
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     """Модель комментариев."""
 
     review = models.ForeignKey(
